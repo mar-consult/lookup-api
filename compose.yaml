@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: lookup_app
+    build:
+      context: .  
+      dockerfile: Dockerfile 
+    image: lookup_app:latest 
+    ports:
+      - "8080:8080"  
+    environment:
+      - POSTGRES_USERNAME=test
+      - POSTGRES_PASSWORD=test
+      - POSTGRES_HOST=lookup_postgres
+      - TOKEN=sk_49c5ad9208c03e6b0d3e4f719592efc9
+    depends_on:
+      - db
+    command: ["/bin/sh", "-c", "alembic upgrade head && python main.py"]
+    restart: always 
+
+  
+  db:
+    container_name: lookup_postgres
+    image: postgres:15-alpine  
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/  
+    environment:
+      - POSTGRES_PASSWORD=test
+      - POSTGRES_USER=test
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+    healthcheck: 
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
