@@ -17,6 +17,9 @@ jobs:
     steps:
       - name: Git checkout
         uses: actions/checkout@v4
+      
+      - name: Install Pipenv
+        run: pip install pipenv --user
 
       - name: Run Lint on code
         run: make lint
