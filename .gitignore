@@ -137,3 +137,6 @@ cython_debug/
 .dccache
 
 .vscode
+**/.terraform.*
+.terraform/** */
+**/.terraform
