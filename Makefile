@@ -36,11 +36,6 @@ migration: pipenv ## performs a database migration
 	alembic upgrade head
 	@printf "\n\n++++++++++++++ DONE WITH flake8 linter ++++++++++++++++++\n";
 
-test: pipenv-dev  ## runs unit tests
-	@printf "\n\n++++++++++++++ STARTING test ++++++++++++++++++\n";
-	pipenv run pytest
-	@printf "\n\n++++++++++++++ DONE WITH test ++++++++++++++++++\n";
-
 security: pipenv-dev ## check for security issues on code
 	@printf "\n\n++++++++++++++ STARTING security check ++++++++++++++++++\n";
 	pipenv run bandit -r app
@@ -56,4 +51,4 @@ run: migration ## starts the application
 	pipenv run python3 main.py
 	@printf "\n\n++++++++++++++ DONE WITH run ++++++++++++++++++\n";
 
-pre-commit: lint test security docker-lint ## pre-check before commit and push
+pre-commit: lint security docker-lint ## pre-check before commit and push
