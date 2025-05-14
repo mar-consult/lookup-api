@@ -30,7 +30,8 @@ async def lookup(request: Request, email: str,
 
     api_request = requests.get(url=URL_PATH,
                                headers=HEADERS,
-                               params={"email": email})
+                               params={"email": email},
+                               timeout=30)
     if api_request.status_code != 200:
         return JSONResponse(
             content={"message": f"User with email {email} not found"},

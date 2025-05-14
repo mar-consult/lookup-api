@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 jobs:
-  code_lint:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Git checkout
@@ -26,4 +26,17 @@ jobs:
       
       - name: Run lint on Dockerfile
         run: make docker-lint
+  
+  security_checks:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v4
+      
+      - name: Install Pipenv
+        run: pip install pipenv --user
+
+      - name: Run Security Check on code
+        run: make security
         
