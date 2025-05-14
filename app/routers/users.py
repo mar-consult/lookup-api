@@ -19,17 +19,24 @@ logger = logging.getLogger(__name__)
 URL_PATH = "https://person.clearbit.com/v2/people/find"
 HEADERS = {'Authorization': f'Bearer {getenv("TOKEN")}'}
 
+
 @router.get(
     "/lookup",
     status_code=status.HTTP_200_OK,
     response_model=LookupResponse
 )
-async def lookup(request: Request, email: str, db: AsyncSession = Depends(get_db)):
-    
-    api_request = requests.get(url=URL_PATH, headers=HEADERS, params={"email": email})
+async def lookup(request: Request, email: str,
+                 db: AsyncSession = Depends(get_db)):
+
+    api_request = requests.get(url=URL_PATH,
+                               headers=HEADERS,
+                               params={"email": email})
     if api_request.status_code != 200:
-        return JSONResponse(content={"message": f"User with email {email} not found"}, status_code=status.HTTP_404_NOT_FOUND)
-    
+        return JSONResponse(
+            content={"message": f"User with email {email} not found"},
+            status_code=status.HTTP_404_NOT_FOUND
+        )
+
     data = api_request.json()
 
     query = await db.scalars(
@@ -37,10 +44,10 @@ async def lookup(request: Request, email: str, db: AsyncSession = Depends(get_db
                 UserModel
             ).select_from(UserModel).where(UserModel.email == email)
     )
-    
-    user  = query.first()
 
-    if user == None:
+    user = query.first()
+
+    if user is None:
         db.add(UserModel(email=email, num_of_hits=1))
         await db.flush()
         await db.commit()
@@ -68,15 +75,14 @@ async def lookup(request: Request, email: str, db: AsyncSession = Depends(get_db
     status_code=status.HTTP_200_OK
 )
 async def popularity(request: Request, db: AsyncSession = Depends(get_db)):
-    
+
     query = await db.scalars(
             select(
                 UserModel.email
-            ).select_from(UserModel).order_by(desc(UserModel.num_of_hits)).limit(10)
+            ).select_from(UserModel).order_by(
+                desc(UserModel.num_of_hits)).limit(10)
     )
-    
-    users  = query.all()
+
+    users = query.all()
 
     return users
-
-

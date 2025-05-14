@@ -2,7 +2,6 @@ from fastapi import FastAPI
 from app.routers import users, health
 
 
-
 def build_app():
     app = FastAPI(
         title="Lookup API",

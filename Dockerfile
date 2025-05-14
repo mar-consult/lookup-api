@@ -14,7 +14,7 @@ RUN pip install --no-cache-dir --upgrade pip==24.0 && \
     pip install --no-cache-dir pipenv==2023.12 && \
     pipenv install --system --deploy 
 
-RUN pip install psycopg2-binary
+RUN pip install --no-cache-dir psycopg2-binary==2.9.10
 
 ENV PORT=8080
 
