@@ -22,14 +22,16 @@ jobs:
         name: 'Authenticate to GCP'
         uses: 'google-github-actions/auth@v2'
         with:
-            create_credentials_file: 'true'
+            create_credentials_file: true
+            activate_credentials_file: true
             workload_identity_provider: 'projects/814936308484/locations/global/workloadIdentityPools/github/providers/github-provider'
             service_account: 'github-actions@playground-s-11-38cb6692.iam.gserviceaccount.com'
-      - id: 'gcloud'
-        name: 'gcloud'
-        run: |-
-          gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}"
-          gcloud compute instances list
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.3.0
+      - name: set crdential_file
+        run: gcloud auth login --cred-file=${{steps.auth.outputs.credentials_file_path}}
+      - name: Run gcloud
+        run: gcloud compute instances list --zones us-east4-c
   # lint:
   #   runs-on: ubuntu-latest
   #   steps:
